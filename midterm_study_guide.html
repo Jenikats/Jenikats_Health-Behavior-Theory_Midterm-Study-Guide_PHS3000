@@ -1,0 +1,864 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Health Behavior Theory — Midterm Study Guide</title>
+<style>
+  :root {
+    --primary: #4f46e5;
+    --primary-light: #818cf8;
+    --primary-dark: #3730a3;
+    --accent: #ec4899;
+    --accent2: #06b6d4;
+    --green: #10b981;
+    --yellow: #f59e0b;
+    --red: #ef4444;
+    --bg: #f8f7ff;
+    --card: #ffffff;
+    --text: #1e1b4b;
+    --muted: #6b7280;
+    --border: #e0e7ff;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: 'Segoe UI', system-ui, sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; }
+
+  /* HEADER */
+  .header { background: linear-gradient(135deg, #4f46e5 0%, #7c3aed 50%, #ec4899 100%); color: white; padding: 32px 24px 24px; text-align: center; }
+  .header h1 { font-size: 2rem; font-weight: 800; letter-spacing: -0.5px; }
+  .header p { margin-top: 6px; opacity: 0.85; font-size: 1rem; }
+  .progress-bar-wrap { max-width: 400px; margin: 18px auto 0; background: rgba(255,255,255,0.2); border-radius: 999px; height: 10px; }
+  .progress-bar { height: 10px; border-radius: 999px; background: white; transition: width 0.4s; width: 0%; }
+  .progress-label { font-size: 0.8rem; margin-top: 5px; opacity: 0.9; }
+
+  /* TABS */
+  .tabs { display: flex; justify-content: center; gap: 8px; flex-wrap: wrap; padding: 20px 16px 0; background: white; border-bottom: 2px solid var(--border); }
+  .tab-btn { background: transparent; border: none; padding: 10px 20px; border-radius: 8px 8px 0 0; font-size: 0.95rem; font-weight: 600; color: var(--muted); cursor: pointer; transition: all 0.2s; border-bottom: 3px solid transparent; }
+  .tab-btn:hover { color: var(--primary); background: var(--bg); }
+  .tab-btn.active { color: var(--primary); border-bottom: 3px solid var(--primary); background: var(--bg); }
+
+  /* PANELS */
+  .panel { display: none; max-width: 900px; margin: 0 auto; padding: 28px 20px 60px; }
+  .panel.active { display: block; }
+
+  /* SECTION CARDS */
+  .section-card { background: var(--card); border: 1px solid var(--border); border-radius: 16px; margin-bottom: 20px; overflow: hidden; box-shadow: 0 2px 8px rgba(79,70,229,0.07); }
+  .section-header { padding: 16px 20px; display: flex; align-items: center; justify-content: space-between; cursor: pointer; user-select: none; }
+  .section-header:hover { background: var(--bg); }
+  .section-title { font-size: 1.1rem; font-weight: 700; display: flex; align-items: center; gap: 10px; }
+  .section-badge { display: inline-flex; align-items: center; justify-content: center; width: 32px; height: 32px; border-radius: 50%; font-size: 0.85rem; font-weight: 800; color: white; flex-shrink: 0; }
+  .toggle-icon { font-size: 1.2rem; color: var(--primary); transition: transform 0.25s; }
+  .section-body { padding: 0 20px 20px; display: none; }
+  .section-body.open { display: block; }
+
+  /* CONTENT COMPONENTS */
+  .concept { background: var(--bg); border-left: 4px solid var(--primary); border-radius: 0 8px 8px 0; padding: 12px 16px; margin: 10px 0; }
+  .concept strong { color: var(--primary-dark); }
+  .pill-list { display: flex; flex-wrap: wrap; gap: 8px; margin: 10px 0; }
+  .pill { background: #e0e7ff; color: var(--primary-dark); padding: 5px 13px; border-radius: 999px; font-size: 0.85rem; font-weight: 600; }
+  .pill.green { background: #d1fae5; color: #065f46; }
+  .pill.yellow { background: #fef3c7; color: #92400e; }
+  .pill.pink { background: #fce7f3; color: #9d174d; }
+  .pill.cyan { background: #cffafe; color: #164e63; }
+  .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin: 12px 0; }
+  @media (max-width: 600px) { .two-col { grid-template-columns: 1fr; } }
+  .mini-card { background: var(--bg); border: 1px solid var(--border); border-radius: 10px; padding: 12px; }
+  .mini-card h4 { font-size: 0.9rem; font-weight: 700; color: var(--primary); margin-bottom: 6px; }
+  .mini-card ul { padding-left: 16px; font-size: 0.88rem; line-height: 1.7; }
+  .pyramid { margin: 14px 0; }
+  .pyramid-row { text-align: center; margin: 3px auto; border-radius: 6px; padding: 9px 12px; font-size: 0.85rem; font-weight: 600; color: white; }
+  table.compare { width: 100%; border-collapse: collapse; font-size: 0.88rem; margin: 12px 0; }
+  table.compare th { background: var(--primary); color: white; padding: 9px 12px; text-align: left; }
+  table.compare td { padding: 8px 12px; border-bottom: 1px solid var(--border); vertical-align: top; }
+  table.compare tr:nth-child(even) td { background: var(--bg); }
+  .note-box { background: #fffbeb; border: 1px solid #fcd34d; border-radius: 10px; padding: 12px 16px; margin: 12px 0; font-size: 0.88rem; }
+  .note-box .label { font-weight: 700; color: #b45309; margin-bottom: 3px; }
+  .formula { background: linear-gradient(135deg,#e0e7ff,#fce7f3); border-radius: 10px; padding: 14px 18px; text-align: center; font-size: 0.95rem; font-weight: 700; color: var(--primary-dark); margin: 12px 0; letter-spacing: 0.2px; }
+
+  /* FLASHCARDS */
+  #flashcards .fc-controls { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 10px; margin-bottom: 18px; }
+  .fc-filter { display: flex; gap: 8px; flex-wrap: wrap; }
+  .fc-filter-btn { background: var(--bg); border: 2px solid var(--border); border-radius: 8px; padding: 6px 14px; font-size: 0.85rem; font-weight: 600; cursor: pointer; color: var(--muted); transition: all 0.2s; }
+  .fc-filter-btn.active { border-color: var(--primary); color: var(--primary); background: #e0e7ff; }
+  .fc-counter { font-size: 0.9rem; color: var(--muted); font-weight: 600; }
+  .flashcard-wrap { perspective: 1200px; margin-bottom: 20px; cursor: pointer; }
+  .flashcard { width: 100%; min-height: 240px; position: relative; transform-style: preserve-3d; transition: transform 0.55s cubic-bezier(0.4,0,0.2,1); border-radius: 18px; }
+  .flashcard.flipped { transform: rotateY(180deg); }
+  .fc-face { position: absolute; width: 100%; height: 100%; backface-visibility: hidden; border-radius: 18px; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 28px; text-align: center; box-shadow: 0 8px 30px rgba(79,70,229,0.13); }
+  .fc-front { background: linear-gradient(135deg, #4f46e5, #7c3aed); color: white; }
+  .fc-back { background: white; border: 2px solid var(--border); color: var(--text); transform: rotateY(180deg); }
+  .fc-front .tag { background: rgba(255,255,255,0.2); border-radius: 999px; padding: 4px 12px; font-size: 0.75rem; font-weight: 600; margin-bottom: 14px; }
+  .fc-front .question { font-size: 1.15rem; font-weight: 700; line-height: 1.5; }
+  .fc-back .answer { font-size: 0.97rem; line-height: 1.6; max-width: 100%; }
+  .fc-back .answer strong { color: var(--primary); }
+  .fc-hint { font-size: 0.78rem; margin-top: 10px; opacity: 0.6; }
+  .fc-nav { display: flex; align-items: center; justify-content: center; gap: 14px; }
+  .fc-nav button { background: var(--primary); color: white; border: none; border-radius: 10px; padding: 10px 24px; font-size: 0.95rem; font-weight: 700; cursor: pointer; transition: background 0.2s; }
+  .fc-nav button:hover { background: var(--primary-dark); }
+  .fc-nav button:disabled { background: #c7d2fe; cursor: default; }
+  .fc-nav .fc-pos { font-size: 0.95rem; font-weight: 700; color: var(--muted); min-width: 70px; text-align: center; }
+
+  /* QUIZ */
+  #quiz .quiz-settings { display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 20px; align-items: center; }
+  #quiz .quiz-settings label { font-weight: 600; font-size: 0.9rem; }
+  #quiz .quiz-settings select { border: 2px solid var(--border); border-radius: 8px; padding: 7px 12px; font-size: 0.88rem; background: white; }
+  .start-btn { background: linear-gradient(135deg, #4f46e5, #7c3aed); color: white; border: none; border-radius: 10px; padding: 10px 28px; font-size: 1rem; font-weight: 700; cursor: pointer; transition: opacity 0.2s; }
+  .start-btn:hover { opacity: 0.9; }
+  .quiz-q { background: var(--card); border: 1px solid var(--border); border-radius: 16px; padding: 24px; margin-bottom: 18px; box-shadow: 0 2px 8px rgba(79,70,229,0.07); }
+  .quiz-q .q-num { font-size: 0.8rem; font-weight: 700; color: var(--muted); margin-bottom: 8px; text-transform: uppercase; letter-spacing: 0.5px; }
+  .quiz-q .q-text { font-size: 1rem; font-weight: 700; margin-bottom: 16px; line-height: 1.5; }
+  .options { display: flex; flex-direction: column; gap: 10px; }
+  .option-btn { background: var(--bg); border: 2px solid var(--border); border-radius: 10px; padding: 12px 16px; text-align: left; font-size: 0.92rem; font-weight: 500; cursor: pointer; transition: all 0.18s; line-height: 1.4; }
+  .option-btn:hover:not(:disabled) { border-color: var(--primary); background: #e0e7ff; }
+  .option-btn.correct { border-color: var(--green); background: #d1fae5; color: #065f46; font-weight: 700; }
+  .option-btn.incorrect { border-color: var(--red); background: #fee2e2; color: #991b1b; }
+  .option-btn.reveal { border-color: var(--green); background: #d1fae5; color: #065f46; }
+  .feedback { margin-top: 12px; padding: 10px 14px; border-radius: 8px; font-size: 0.88rem; line-height: 1.5; }
+  .feedback.correct { background: #d1fae5; color: #065f46; }
+  .feedback.incorrect { background: #fee2e2; color: #991b1b; }
+  .quiz-submit { background: var(--primary); color: white; border: none; border-radius: 10px; padding: 9px 22px; font-size: 0.9rem; font-weight: 700; cursor: pointer; margin-top: 10px; }
+  .quiz-submit:hover { background: var(--primary-dark); }
+  .quiz-result { background: linear-gradient(135deg,#4f46e5,#7c3aed); color: white; border-radius: 16px; padding: 28px; text-align: center; }
+  .quiz-result .score { font-size: 3rem; font-weight: 800; }
+  .quiz-result .score-label { font-size: 1.1rem; opacity: 0.85; margin-top: 6px; }
+  .quiz-result .result-msg { margin: 16px 0 20px; font-size: 1rem; }
+
+  /* KEY TERMS */
+  .terms-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 14px; }
+  .term-card { background: var(--card); border: 1px solid var(--border); border-radius: 12px; padding: 16px; box-shadow: 0 2px 6px rgba(79,70,229,0.06); }
+  .term-card .term { font-weight: 800; color: var(--primary); font-size: 0.97rem; margin-bottom: 6px; }
+  .term-card .def { font-size: 0.86rem; line-height: 1.6; color: #374151; }
+  .terms-filter { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 18px; }
+
+  /* TIMELINE */
+  .timeline { position: relative; padding-left: 32px; }
+  .timeline::before { content: ''; position: absolute; left: 10px; top: 0; bottom: 0; width: 3px; background: var(--border); border-radius: 3px; }
+  .tl-item { position: relative; margin-bottom: 22px; }
+  .tl-dot { position: absolute; left: -26px; top: 4px; width: 16px; height: 16px; border-radius: 50%; border: 3px solid white; box-shadow: 0 0 0 2px var(--primary); background: var(--primary); }
+  .tl-year { font-size: 0.75rem; font-weight: 800; color: var(--primary); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 2px; }
+  .tl-content { background: var(--card); border: 1px solid var(--border); border-radius: 10px; padding: 10px 14px; font-size: 0.88rem; line-height: 1.6; }
+  .tl-content strong { color: var(--primary-dark); }
+
+  /* MISC */
+  h3 { font-size: 1rem; font-weight: 700; color: var(--primary-dark); margin: 16px 0 8px; }
+  p, li { font-size: 0.92rem; line-height: 1.7; color: #374151; }
+  ul, ol { padding-left: 20px; }
+  li { margin-bottom: 3px; }
+  .divider { height: 1px; background: var(--border); margin: 14px 0; }
+
+  /* RESPONSIVE */
+  @media (max-width: 500px) {
+    .header h1 { font-size: 1.5rem; }
+    .tabs { padding: 14px 8px 0; gap: 4px; }
+    .tab-btn { padding: 8px 12px; font-size: 0.82rem; }
+  }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <h1>🎓 Health Behavior Theory</h1>
+  <p>Midterm Study Guide — Interactive Review</p>
+  <p style="margin-top:8px; font-size:0.85rem; opacity:0.75; font-style:italic;">Created by Jenika Towana Scott, M.S.W. (PhD Student)</p>
+  <div class="progress-bar-wrap">
+    <div class="progress-bar" id="progressBar"></div>
+  </div>
+  <div class="progress-label" id="progressLabel">0 flashcards studied</div>
+</div>
+
+<div class="tabs">
+  <button class="tab-btn active" onclick="showTab('notes')">📖 Study Notes</button>
+  <button class="tab-btn" onclick="showTab('flashcards')">🃏 Flashcards</button>
+  <button class="tab-btn" onclick="showTab('quiz')">✏️ Practice Quiz</button>
+  <button class="tab-btn" onclick="showTab('terms')">📚 Key Terms</button>
+</div>
+
+<!-- ============================= STUDY NOTES ============================= -->
+<div class="panel active" id="notes">
+
+  <!-- 1. BIOMEDICAL MODEL -->
+  <div class="section-card">
+    <div class="section-header" onclick="toggleSection(this)">
+      <div class="section-title">
+        <div class="section-badge" style="background:#4f46e5">1</div>
+        Biomedical Model & Biopsychosocial Model
+      </div>
+      <span class="toggle-icon">▼</span>
+    </div>
+    <div class="section-body">
+      <div class="concept"><strong>Core idea:</strong> Dominated 20th-century medicine. Explains disease through cellular/biochemical mechanisms. Patient = "mechanism in need of repair." Disease = deviation from measurable biological norm.</div>
+
+      <h3>Key Features of the Biomedical Model</h3>
+      <ul>
+        <li>Reductionist — breaks disease into smallest biological component</li>
+        <li>Dualistic — separates mind from body</li>
+        <li>Excludes psychological, social, and behavioral dimensions</li>
+        <li>Patient is the <em>site</em> of disease, not a whole person</li>
+        <li>Does not account for <em>why</em> some people get sick and others don't</li>
+      </ul>
+
+      <h3>Cassell's Critique — "The Concept of Person"</h3>
+      <div class="concept"><strong>Eric Cassell</strong> argued biomedicine cannot adequately address human suffering. He emphasized:
+        <ul style="margin-top:6px">
+          <li>Person-centered focus — patients are more than their biology</li>
+          <li>Centrality of the individual — illness has personal meaning</li>
+          <li>Limits of biomedicine — cannot explain all clinical phenomena</li>
+          <li>Critique of dogma — challenges unquestioned assumptions</li>
+        </ul>
+      </div>
+
+      <div class="divider"></div>
+      <h3>Biopsychosocial Model (Engel, 1977)</h3>
+      <p>George Engel proposed the <strong>biopsychosocial model</strong> as a replacement for the biomedical model, incorporating three dimensions:</p>
+      <div class="two-col" style="margin-top:10px">
+        <div class="mini-card">
+          <h4>🧬 Biological</h4>
+          <ul><li>Genetics</li><li>Physiology</li><li>Pathogens</li><li>Cellular processes</li></ul>
+        </div>
+        <div class="mini-card">
+          <h4>🧠 Psychological</h4>
+          <ul><li>Cognition</li><li>Emotions</li><li>Behavior</li><li>Mental health</li></ul>
+        </div>
+        <div class="mini-card">
+          <h4>🤝 Social</h4>
+          <ul><li>Culture</li><li>Family</li><li>Socioeconomic status</li><li>Community</li></ul>
+        </div>
+        <div class="mini-card">
+          <h4>⚡ Key Shift</h4>
+          <ul><li>From disease → health</li><li>From parts → whole person</li><li>From reductionism → systems thinking</li></ul>
+        </div>
+      </div>
+      <div class="note-box"><div class="label">⚠️ Exam Tip</div>Be able to contrast biomedical vs. biopsychosocial — the biomedical model is reductionist and dualistic; biopsychosocial is holistic and integrative.</div>
+    </div>
+  </div>
+
+  <!-- 2. HEALTH BELIEF MODEL -->
+  <div class="section-card">
+    <div class="section-header" onclick="toggleSection(this)">
+      <div class="section-title">
+        <div class="section-badge" style="background:#7c3aed">2</div>
+        Health Belief Model (HBM)
+      </div>
+      <span class="toggle-icon">▼</span>
+    </div>
+    <div class="section-body">
+      <div class="concept"><strong>Origins:</strong> Developed in the 1950s by US Public Health Service researchers (Hochbaum, Rosenstock, Kegels &amp; Leventhal) to explain why people wouldn't get free TB screenings.<br><strong>Core premise:</strong> Health behavior is determined by personal beliefs about disease and strategies to reduce its occurrence.</div>
+
+      <h3>The 6 Constructs</h3>
+      <div class="two-col">
+        <div class="mini-card">
+          <h4>1. Perceived Susceptibility</h4>
+          <ul><li>"Am I at risk?"</li><li>Belief about chances of getting a condition</li><li>Can range from denial to high risk awareness</li></ul>
+        </div>
+        <div class="mini-card">
+          <h4>2. Perceived Severity</h4>
+          <ul><li>"How bad would it be?"</li><li>Medical consequences (death, disability)</li><li>Social consequences (job loss, relationships)</li></ul>
+        </div>
+        <div class="mini-card">
+          <h4>3. Perceived Benefits</h4>
+          <ul><li>"Will this action help?"</li><li>Belief that taking action reduces risk or severity</li><li>Must be believable to motivate action</li></ul>
+        </div>
+        <div class="mini-card">
+          <h4>4. Perceived Barriers</h4>
+          <ul><li>"What's in the way?"</li><li>Physical, psychological, financial obstacles</li><li>Most powerful predictor of behavior!</li></ul>
+        </div>
+        <div class="mini-card">
+          <h4>5. Cues to Action</h4>
+          <ul><li>Triggers that prompt behavior</li><li>Internal: symptoms, feeling ill</li><li>External: media, doctor advice, family illness</li></ul>
+        </div>
+        <div class="mini-card">
+          <h4>6. Self-Efficacy <span style="font-weight:400;font-size:0.75rem">(added 1988)</span></h4>
+          <ul><li>Confidence in ability to take action</li><li>Added by Rosenstock, Strecher &amp; Becker</li><li>Especially for complex behaviors</li></ul>
+        </div>
+      </div>
+
+      <div class="formula">
+        Perceived Threat (Susceptibility + Severity) + Benefits − Barriers + Cues to Action + Self-Efficacy → <strong>Health Behavior</strong>
+      </div>
+
+      <h3>Perceived Threat</h3>
+      <p>Susceptibility × Severity = <strong>Perceived Threat</strong>. This is the motivating force. Without feeling threatened, there's no reason to change.</p>
+
+      <div class="note-box"><div class="label">⚠️ Exam Tip</div><strong>Perceived Barriers</strong> is consistently the strongest predictor of health behavior in the HBM. Know all 6 constructs and be able to give examples of each!</div>
+    </div>
+  </div>
+
+  <!-- 3. SELF-EFFICACY -->
+  <div class="section-card">
+    <div class="section-header" onclick="toggleSection(this)">
+      <div class="section-title">
+        <div class="section-badge" style="background:#ec4899">3</div>
+        Self-Efficacy (Bandura, 1977)
+      </div>
+      <span class="toggle-icon">▼</span>
+    </div>
+    <div class="section-body">
+      <div class="concept"><strong>Definition:</strong> A person's belief in their own ability to perform a specific behavior to produce a desired outcome. Self-efficacy is <em>behavior-specific</em> — not general confidence.</div>
+      <div class="concept"><strong>Key distinction:</strong> Self-efficacy ≠ Outcome Expectancy. Self-efficacy = "Can I do it?" | Outcome expectancy = "Will it work?"</div>
+
+      <h3>4 Sources of Self-Efficacy</h3>
+      <div class="two-col">
+        <div class="mini-card">
+          <h4>⭐ 1. Mastery Experience (most powerful)</h4>
+          <ul><li>Personal success builds efficacy</li><li>Past performance is the strongest source</li><li>Failures can lower self-efficacy</li></ul>
+        </div>
+        <div class="mini-card">
+          <h4>👁️ 2. Vicarious Experience</h4>
+          <ul><li>Observing others succeed ("if they can, I can")</li><li>Role models especially powerful when similar to observer</li><li>Social modeling</li></ul>
+        </div>
+        <div class="mini-card">
+          <h4>💬 3. Verbal Persuasion</h4>
+          <ul><li>Encouragement from others</li><li>Coach, doctor, family saying "you can do it"</li><li>Weaker than mastery or vicarious</li></ul>
+        </div>
+        <div class="mini-card">
+          <h4>💓 4. Somatic &amp; Emotional States</h4>
+          <ul><li>Physiological cues (heart racing, sweating)</li><li>Mood and emotional state affect confidence</li><li>Anxiety can reduce self-efficacy</li></ul>
+        </div>
+      </div>
+      <div class="note-box"><div class="label">⚠️ Exam Tip</div>Mastery Experience > Vicarious > Verbal Persuasion > Somatic. Know this order!</div>
+    </div>
+  </div>
+
+  <!-- 4. TPB & IBM -->
+  <div class="section-card">
+    <div class="section-header" onclick="toggleSection(this)">
+      <div class="section-title">
+        <div class="section-badge" style="background:#06b6d4">4</div>
+        Theory of Planned Behavior (TPB) &amp; Integrated Behavioral Model (IBM)
+      </div>
+      <span class="toggle-icon">▼</span>
+    </div>
+    <div class="section-body">
+      <div class="concept"><strong>TPB (Ajzen, 1991)</strong> — an extension of the Theory of Reasoned Action (TRA). Adds <em>Perceived Behavioral Control</em> to account for behaviors not fully under volitional control.</div>
+
+      <h3>Three Determinants of Intention → Behavior</h3>
+      <div class="two-col">
+        <div class="mini-card">
+          <h4>1. Attitude Toward Behavior</h4>
+          <ul>
+            <li>Positive or negative evaluation of performing the behavior</li>
+            <li>= Behavioral beliefs × Outcome evaluations</li>
+            <li>"Is this a good/bad thing to do?"</li>
+          </ul>
+        </div>
+        <div class="mini-card">
+          <h4>2. Subjective Norm</h4>
+          <ul>
+            <li>Perceived social pressure</li>
+            <li>= Normative beliefs × Motivation to comply</li>
+            <li>"What would important people think?"</li>
+          </ul>
+        </div>
+        <div class="mini-card">
+          <h4>3. Perceived Behavioral Control (PBC)</h4>
+          <ul>
+            <li>Perceived ease/difficulty of performing behavior</li>
+            <li>= Control beliefs × Power of control factors</li>
+            <li>Similar to self-efficacy</li>
+          </ul>
+        </div>
+        <div class="mini-card">
+          <h4>→ Behavioral Intention</h4>
+          <ul>
+            <li>Strongest predictor of actual behavior</li>
+            <li>Attitude + Subjective Norm + PBC → Intention</li>
+            <li>Intention → Behavior (when control is present)</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="formula">Attitude + Subjective Norm + Perceived Behavioral Control → <strong>Intention → Behavior</strong></div>
+
+      <div class="divider"></div>
+      <h3>Integrated Behavioral Model (IBM)</h3>
+      <div class="concept">IBM extends TPB by adding variables that bridge the <em>intention-behavior gap</em>. Even when people intend to act, they may not follow through.</div>
+      <p><strong>IBM adds to TPB:</strong></p>
+      <div class="pill-list">
+        <span class="pill">Personal Agency</span>
+        <span class="pill green">Knowledge &amp; Skills</span>
+        <span class="pill yellow">Salience of Behavior</span>
+        <span class="pill pink">Environmental Constraints</span>
+        <span class="pill cyan">Habit / Automaticity</span>
+      </div>
+
+      <table class="compare">
+        <tr><th>Feature</th><th>TPB</th><th>IBM</th></tr>
+        <tr><td>Core constructs</td><td>Attitude, Subj. Norm, PBC</td><td>Same + more</td></tr>
+        <tr><td>Behavioral intention</td><td>Central</td><td>Central</td></tr>
+        <tr><td>Knowledge/skills</td><td>Not included</td><td>Included</td></tr>
+        <tr><td>Environmental factors</td><td>Limited</td><td>Explicit</td></tr>
+        <tr><td>Habit</td><td>Not included</td><td>Included</td></tr>
+      </table>
+      <div class="note-box"><div class="label">⚠️ Exam Tip</div>IBM was developed specifically for health promotion. Know what IBM adds that TPB doesn't have — knowledge/skills, environmental constraints, salience, and habit are the key additions.</div>
+    </div>
+  </div>
+
+  <!-- 5. TRANSTHEORETICAL MODEL -->
+  <div class="section-card">
+    <div class="section-header" onclick="toggleSection(this)">
+      <div class="section-title">
+        <div class="section-badge" style="background:#10b981">5</div>
+        Transtheoretical Model (TTM) / Stages of Change
+      </div>
+      <span class="toggle-icon">▼</span>
+    </div>
+    <div class="section-body">
+      <div class="concept"><strong>Developed by:</strong> Prochaska &amp; DiClemente (1983). Originally developed from studying smoking cessation. TTM integrates multiple theories — hence "transtheoretical."</div>
+
+      <h3>The 5 Stages of Change</h3>
+      <div class="two-col">
+        <div class="mini-card"><h4>1. Precontemplation</h4><ul><li>Not thinking about change</li><li>No intention to act in next 6 months</li><li>"I don't have a problem"</li><li>May be in denial or uninformed</li></ul></div>
+        <div class="mini-card"><h4>2. Contemplation</h4><ul><li>Thinking about change</li><li>Plans to act within next 6 months</li><li>Ambivalent — sees pros AND cons</li><li>"Chronic contemplators" may stay here</li></ul></div>
+        <div class="mini-card"><h4>3. Preparation</h4><ul><li>Ready to act within next 30 days</li><li>Taking small steps toward change</li><li>Has a plan in place</li><li>"Action threshold" reached</li></ul></div>
+        <div class="mini-card"><h4>4. Action</h4><ul><li>Changed behavior &lt; 6 months ago</li><li>Most visible, effortful stage</li><li>High risk of relapse</li><li>Requires commitment and energy</li></ul></div>
+        <div class="mini-card"><h4>5. Maintenance</h4><ul><li>Sustained behavior change &gt; 6 months</li><li>Preventing relapse is primary task</li><li>Less temptation over time</li><li>May reach "termination" stage</li></ul></div>
+        <div class="mini-card"><h4>6. Termination (optional)</h4><ul><li>Zero temptation, 100% confidence</li><li>Not always included</li><li>Most people cycle through stages</li><li>Relapse is normal, not failure</li></ul></div>
+      </div>
+
+      <h3>Decisional Balance</h3>
+      <div class="formula">Pros of Changing vs. Cons of Changing → Movement Through Stages</div>
+      <p>In early stages (Precontemplation), cons outweigh pros. As people move forward, pros increase relative to cons.</p>
+
+      <h3>Processes of Change (10 total)</h3>
+      <div class="pill-list">
+        <span class="pill">Consciousness Raising</span>
+        <span class="pill green">Dramatic Relief</span>
+        <span class="pill yellow">Environmental Reevaluation</span>
+        <span class="pill pink">Social Liberation</span>
+        <span class="pill cyan">Self-Reevaluation</span>
+        <span class="pill">Self-Liberation</span>
+        <span class="pill green">Helping Relationships</span>
+        <span class="pill yellow">Counter Conditioning</span>
+        <span class="pill pink">Reinforcement Management</span>
+        <span class="pill cyan">Stimulus Control</span>
+      </div>
+      <p style="margin-top:8px">First 5 = <strong>Experiential</strong> (earlier stages). Last 5 = <strong>Behavioral</strong> (later stages).</p>
+      <div class="note-box"><div class="label">⚠️ Exam Tip</div>Know the time markers: Precontemplation/Contemplation = no action in next 6 months; Preparation = action in next 30 days; Action = changed &lt;6 months; Maintenance = changed &gt;6 months.</div>
+    </div>
+  </div>
+
+  <!-- 6. SOCIAL ECOLOGICAL MODEL -->
+  <div class="section-card">
+    <div class="section-header" onclick="toggleSection(this)">
+      <div class="section-title">
+        <div class="section-badge" style="background:#f59e0b">6</div>
+        Social Ecological Framework (SEM)
+      </div>
+      <span class="toggle-icon">▼</span>
+    </div>
+    <div class="section-body">
+      <div class="concept"><strong>Core idea:</strong> Health behaviors are influenced by multiple levels of the social and physical environment — not just individual choices. Based on Bronfenbrenner's ecological systems theory.</div>
+
+      <h3>Levels of Influence</h3>
+      <div class="two-col">
+        <div class="mini-card">
+          <h4>1. Individual (Intrapersonal)</h4>
+          <ul><li>Knowledge, attitudes, beliefs</li><li>Self-efficacy</li><li>Demographics, skills</li><li>Personal history</li></ul>
+        </div>
+        <div class="mini-card">
+          <h4>2. Interpersonal</h4>
+          <ul><li>Family, friends, peers</li><li>Social networks, social support</li><li>Social norms</li><li>Cultural expectations</li></ul>
+        </div>
+        <div class="mini-card">
+          <h4>3. Organizational / Community</h4>
+          <ul><li>Schools, workplaces, churches</li><li>Formal and informal rules</li><li>Access to resources</li><li>Neighborhood environment</li></ul>
+        </div>
+        <div class="mini-card">
+          <h4>4. Public Policy / Societal</h4>
+          <ul><li>Local, state, federal laws</li><li>Policy and regulations</li><li>Systemic inequities</li><li>Social determinants of health</li></ul>
+        </div>
+      </div>
+      <div class="note-box"><div class="label">💡 Key Insight</div>SEM recognizes that you can't address health behavior ONLY at the individual level. Change at multiple levels = more sustainable impact. Upstream (policy) changes affect the most people.</div>
+    </div>
+  </div>
+
+  <!-- 7. HEALTH IMPACT PYRAMID -->
+  <div class="section-card">
+    <div class="section-header" onclick="toggleSection(this)">
+      <div class="section-title">
+        <div class="section-badge" style="background:#ef4444">7</div>
+        Health Impact Pyramid (Frieden, 2010)
+      </div>
+      <span class="toggle-icon">▼</span>
+    </div>
+    <div class="section-body">
+      <div class="concept"><strong>Developed by:</strong> Thomas Frieden (CDC Director). Shows the relationship between population impact and type of intervention.</div>
+
+      <div class="pyramid">
+        <div class="pyramid-row" style="background:#ef4444; max-width:180px; margin:auto">Counseling &amp; Education</div>
+        <div class="pyramid-row" style="background:#f97316; max-width:260px; margin:auto">Clinical Interventions</div>
+        <div class="pyramid-row" style="background:#f59e0b; max-width:340px; margin:auto">Long-lasting Protective Interventions</div>
+        <div class="pyramid-row" style="background:#10b981; max-width:420px; margin:auto">Changing the Context (Default Options)</div>
+        <div class="pyramid-row" style="background:#4f46e5; max-width:500px; margin:auto">Socioeconomic Factors</div>
+        <div style="text-align:center; font-size:0.75rem; color:var(--muted); margin-top:8px">← More population impact | More individual effort required →</div>
+      </div>
+
+      <h3>Each Level Explained</h3>
+      <table class="compare">
+        <tr><th>Level (Bottom→Top)</th><th>Example</th><th>Impact</th></tr>
+        <tr><td><strong>Socioeconomic</strong></td><td>Education, poverty reduction, stable housing</td><td>Greatest — addresses root causes</td></tr>
+        <tr><td><strong>Changing Context</strong></td><td>Calorie labels, safe neighborhoods, bike lanes</td><td>Makes healthy choice the default/easy choice</td></tr>
+        <tr><td><strong>Long-lasting Interventions</strong></td><td>Vaccines, fluoridation, surgical interventions</td><td>One-time action, sustained effect</td></tr>
+        <tr><td><strong>Clinical Interventions</strong></td><td>Medications, screenings, ongoing treatment</td><td>Requires ongoing access and adherence</td></tr>
+        <tr><td><strong>Counseling &amp; Education</strong></td><td>Smoking cessation counseling, nutrition ed</td><td>Least impact on population; high individual effort</td></tr>
+      </table>
+      <div class="note-box"><div class="label">⚠️ Exam Tip</div>Bottom of pyramid = biggest population impact, least individual effort required. Top = most individual effort required, smallest population impact. This is counterintuitive — lower levels are MORE effective at the population level!</div>
+    </div>
+  </div>
+
+  <!-- 8. TIMELINE -->
+  <div class="section-card">
+    <div class="section-header" onclick="toggleSection(this)">
+      <div class="section-title">
+        <div class="section-badge" style="background:#6366f1">8</div>
+        Historical Timeline of Health Theory
+      </div>
+      <span class="toggle-icon">▼</span>
+    </div>
+    <div class="section-body">
+      <div class="timeline">
+        <div class="tl-item"><div class="tl-dot"></div><div class="tl-year">1948</div><div class="tl-content"><strong>WHO definition of health:</strong> "A state of complete physical, mental, and social wellbeing, not merely the absence of disease or infirmity"</div></div>
+        <div class="tl-item"><div class="tl-dot"></div><div class="tl-year">1950s</div><div class="tl-content"><strong>Health Belief Model</strong> developed by Hochbaum, Rosenstock, Kegels &amp; Leventhal at US Public Health Service. Originally to explain TB screening non-compliance.</div></div>
+        <div class="tl-item"><div class="tl-dot"></div><div class="tl-year">1977</div><div class="tl-content"><strong>Biopsychosocial Model</strong> proposed by George Engel as critique of the biomedical model. Self-Efficacy theory published by Bandura.</div></div>
+        <div class="tl-item"><div class="tl-dot"></div><div class="tl-year">1983</div><div class="tl-content"><strong>Transtheoretical Model (TTM)</strong> developed by Prochaska &amp; DiClemente based on smoking cessation research.</div></div>
+        <div class="tl-item"><div class="tl-dot"></div><div class="tl-year">1988</div><div class="tl-content"><strong>Self-Efficacy added to HBM</strong> by Rosenstock, Strecher &amp; Becker as the 6th construct.</div></div>
+        <div class="tl-item"><div class="tl-dot"></div><div class="tl-year">1991</div><div class="tl-content"><strong>Theory of Planned Behavior (TPB)</strong> formalized by Icek Ajzen, extending Theory of Reasoned Action with Perceived Behavioral Control.</div></div>
+        <div class="tl-item"><div class="tl-dot"></div><div class="tl-year">2010</div><div class="tl-content"><strong>Health Impact Pyramid</strong> published by Thomas Frieden (CDC Director), framing population health interventions by impact level.</div></div>
+      </div>
+    </div>
+  </div>
+
+</div><!-- end notes panel -->
+
+<!-- ============================= FLASHCARDS ============================= -->
+<div class="panel" id="flashcards">
+  <div class="fc-controls">
+    <div class="fc-filter" id="fcFilter">
+      <button class="fc-filter-btn active" onclick="setFilter('all', this)">All</button>
+      <button class="fc-filter-btn" onclick="setFilter('HBM', this)">HBM</button>
+      <button class="fc-filter-btn" onclick="setFilter('TPB', this)">TPB / IBM</button>
+      <button class="fc-filter-btn" onclick="setFilter('TTM', this)">TTM</button>
+      <button class="fc-filter-btn" onclick="setFilter('SEM', this)">SEM / Pyramid</button>
+      <button class="fc-filter-btn" onclick="setFilter('Bio', this)">Biomedical</button>
+    </div>
+    <div class="fc-counter" id="fcCounter">0 / 0 studied</div>
+  </div>
+
+  <div class="flashcard-wrap" onclick="flipCard()">
+    <div class="flashcard" id="theCard">
+      <div class="fc-face fc-front">
+        <div class="tag" id="fcTag"></div>
+        <div class="question" id="fcQuestion">Loading...</div>
+        <div class="fc-hint">Click to reveal answer</div>
+      </div>
+      <div class="fc-face fc-back">
+        <div class="answer" id="fcAnswer"></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="fc-nav">
+    <button onclick="prevCard()" id="btnPrev">← Prev</button>
+    <div class="fc-pos" id="fcPos">1 / 1</div>
+    <button onclick="nextCard()" id="btnNext">Next →</button>
+  </div>
+</div>
+
+<!-- ============================= QUIZ ============================= -->
+<div class="panel" id="quiz">
+  <div id="quizSetup">
+    <div class="quiz-settings">
+      <label>Topic:</label>
+      <select id="quizTopic">
+        <option value="all">All Topics</option>
+        <option value="HBM">Health Belief Model</option>
+        <option value="TPB">TPB &amp; IBM</option>
+        <option value="TTM">Stages of Change</option>
+        <option value="SEM">Social Ecological / Pyramid</option>
+        <option value="Bio">Biomedical Model</option>
+      </select>
+      <label>Questions:</label>
+      <select id="quizCount">
+        <option value="5">5</option>
+        <option value="10" selected>10</option>
+        <option value="15">15</option>
+        <option value="all">All</option>
+      </select>
+      <button class="start-btn" onclick="startQuiz()">Start Quiz 🚀</button>
+    </div>
+  </div>
+  <div id="quizArea"></div>
+</div>
+
+<!-- ============================= KEY TERMS ============================= -->
+<div class="panel" id="terms">
+  <div class="terms-filter" id="termsFilter">
+    <button class="fc-filter-btn active" onclick="filterTerms('all', this)">All</button>
+    <button class="fc-filter-btn" onclick="filterTerms('HBM', this)">HBM</button>
+    <button class="fc-filter-btn" onclick="filterTerms('TPB', this)">TPB/IBM</button>
+    <button class="fc-filter-btn" onclick="filterTerms('TTM', this)">TTM</button>
+    <button class="fc-filter-btn" onclick="filterTerms('SEM', this)">SEM</button>
+    <button class="fc-filter-btn" onclick="filterTerms('Bio', this)">Biomedical</button>
+  </div>
+  <div class="terms-grid" id="termsGrid"></div>
+</div>
+
+<script>
+// =================== TAB LOGIC ===================
+function showTab(id) {
+  document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  event.target.classList.add('active');
+}
+
+// =================== SECTION ACCORDION ===================
+function toggleSection(header) {
+  const body = header.nextElementSibling;
+  const icon = header.querySelector('.toggle-icon');
+  const isOpen = body.classList.contains('open');
+  body.classList.toggle('open', !isOpen);
+  icon.style.transform = isOpen ? '' : 'rotate(180deg)';
+}
+
+// =================== FLASHCARD DATA ===================
+const cards = [
+  // HBM
+  { tag:'HBM', q:'What are the 6 constructs of the Health Belief Model?', a:'1. <strong>Perceived Susceptibility</strong> — "Am I at risk?"<br>2. <strong>Perceived Severity</strong> — "How bad would it be?"<br>3. <strong>Perceived Benefits</strong> — "Will action help?"<br>4. <strong>Perceived Barriers</strong> — "What\'s in the way?"<br>5. <strong>Cues to Action</strong> — triggers to act<br>6. <strong>Self-Efficacy</strong> — confidence in ability' },
+  { tag:'HBM', q:'Who developed the Health Belief Model and why?', a:'Developed in the <strong>1950s by US Public Health Service</strong> researchers — <strong>Hochbaum, Rosenstock, Kegels &amp; Leventhal</strong>. Originally to understand why people refused free tuberculosis (TB) screenings.' },
+  { tag:'HBM', q:'What is "Perceived Threat" in the HBM?', a:'Perceived Threat = <strong>Perceived Susceptibility + Perceived Severity</strong>. It is the motivating force. A person must feel threatened before they consider taking action.' },
+  { tag:'HBM', q:'Which HBM construct is the strongest predictor of behavior?', a:'<strong>Perceived Barriers</strong> — consistently the strongest predictor. If obstacles (cost, time, fear, inconvenience) feel too great, people won\'t act even if they feel at risk.' },
+  { tag:'HBM', q:'When and why was Self-Efficacy added to the HBM?', a:'Added in <strong>1988 by Rosenstock, Strecher &amp; Becker</strong> — originally 5 constructs became 6. Added because the original model didn\'t account for complex, long-term behaviors (like diet change or exercise) that require confidence.' },
+  { tag:'HBM', q:'Give an example of an internal vs. external Cue to Action.', a:'<strong>Internal:</strong> Noticing symptoms (chest pain, shortness of breath).<br><strong>External:</strong> A doctor\'s recommendation, a family member\'s illness, a public health campaign, a reminder postcard.' },
+  // TPB/IBM
+  { tag:'TPB', q:'What are the 3 determinants of behavioral intention in the Theory of Planned Behavior?', a:'1. <strong>Attitude toward the behavior</strong> — personal evaluation (good/bad)<br>2. <strong>Subjective Norm</strong> — perceived social pressure<br>3. <strong>Perceived Behavioral Control</strong> — ease/difficulty of performing the behavior' },
+  { tag:'TPB', q:'How is Attitude calculated in the TPB?', a:'Attitude = <strong>Behavioral beliefs × Outcome evaluations</strong>. What you believe will happen (beliefs) × how you feel about those outcomes (evaluations).' },
+  { tag:'TPB', q:'What does the Integrated Behavioral Model (IBM) add to the TPB?', a:'IBM adds: <strong>Knowledge &amp; Skills</strong>, <strong>Environmental Constraints</strong>, <strong>Salience</strong> of the behavior to the person, and <strong>Habit/Automaticity</strong> (past behavior). IBM bridges the <em>intention-behavior gap</em>.' },
+  { tag:'TPB', q:'What is the "intention-behavior gap"?', a:'The gap between <strong>intending</strong> to do something and <strong>actually doing it</strong>. IBM addresses this gap by adding knowledge, skills, environmental factors, and habit — factors that determine whether intentions translate into action.' },
+  { tag:'TPB', q:'What is Subjective Norm in TPB?', a:'Perceived social pressure to perform or not perform a behavior. Calculated as: <strong>Normative beliefs × Motivation to comply</strong>. "What do important people in my life think I should do, and how much do I care?"' },
+  // TTM
+  { tag:'TTM', q:'What are the 5 stages of the Transtheoretical Model?', a:'1. <strong>Precontemplation</strong> — no intention, &gt;6 months<br>2. <strong>Contemplation</strong> — thinking about it, within 6 months<br>3. <strong>Preparation</strong> — planning, within 30 days<br>4. <strong>Action</strong> — changed, &lt;6 months<br>5. <strong>Maintenance</strong> — sustained, &gt;6 months' },
+  { tag:'TTM', q:'Who developed the TTM and what was it based on?', a:'<strong>Prochaska &amp; DiClemente (1983)</strong>, based on research on <strong>smoking cessation</strong>. Called "transtheoretical" because it integrates processes and principles from multiple theories.' },
+  { tag:'TTM', q:'What is Decisional Balance in the TTM?', a:'The weighing of <strong>Pros vs. Cons</strong> of changing behavior. In Precontemplation, cons outweigh pros. As people progress, pros increase relative to cons. Crossing the tipping point moves people to Preparation/Action.' },
+  { tag:'TTM', q:'What is the difference between experiential and behavioral processes of change?', a:'<strong>Experiential processes</strong> (e.g., consciousness raising, dramatic relief) are used in <strong>early stages</strong> (Precontemplation → Contemplation). <strong>Behavioral processes</strong> (e.g., stimulus control, reinforcement management) are used in <strong>later stages</strong> (Preparation → Maintenance).' },
+  { tag:'TTM', q:'Is relapse a failure in the TTM?', a:'<strong>No!</strong> Relapse is considered a <strong>normal part of the change process</strong>. Most people cycle through stages multiple times before achieving maintenance. The model is designed as a <em>spiral</em>, not a linear ladder.' },
+  // SEM
+  { tag:'SEM', q:'What are the 4 levels of the Social Ecological Model?', a:'1. <strong>Individual</strong> — knowledge, beliefs, self-efficacy<br>2. <strong>Interpersonal</strong> — family, friends, social networks<br>3. <strong>Organizational/Community</strong> — schools, workplaces, neighborhoods<br>4. <strong>Public Policy/Societal</strong> — laws, regulations, systemic factors' },
+  { tag:'SEM', q:'What is the key insight of the Social Ecological Model?', a:'Health behaviors are shaped by <strong>multiple levels</strong> of influence simultaneously. Intervening at only the individual level is insufficient. Lasting change requires addressing social, environmental, and policy-level factors — "<strong>upstream</strong>" determinants.' },
+  { tag:'SEM', q:'What does the Health Impact Pyramid show?', a:'The relationship between <strong>type of intervention</strong> and <strong>population-level impact</strong>. Bottom = greatest population impact (socioeconomic factors). Top = least population impact (counseling/education). Bottom-level interventions require less individual effort.' },
+  { tag:'SEM', q:'Who created the Health Impact Pyramid and when?', a:'<strong>Thomas Frieden</strong>, former CDC Director, published in <strong>2010</strong>. It guides public health prioritization — invest in lower-level interventions (default choices, socioeconomic) for greatest impact.' },
+  { tag:'SEM', q:'What does "changing the context" mean at Level 2 of the Health Impact Pyramid?', a:'Making the <strong>healthy choice the default/easy choice</strong> — e.g., placing fruits near checkout, calorie labels on menus, safe bike lanes, smoke-free policies. People don\'t have to consciously choose health; the environment promotes it.' },
+  // Biomedical
+  { tag:'Bio', q:'What are the main characteristics of the Biomedical Model?', a:'1. <strong>Reductionist</strong> — reduces disease to cellular/molecular components<br>2. <strong>Dualistic</strong> — separates mind from body<br>3. Focuses on biological causes only<br>4. Patient = "mechanism in need of repair"<br>5. Ignores psychological and social factors' },
+  { tag:'Bio', q:'What did George Engel (1977) propose and why?', a:'Engel proposed the <strong>Biopsychosocial Model</strong> as a replacement for the biomedical model. He argued biomedicine was <strong>reductionist and dualistic</strong> and failed to account for psychological and social influences on health and illness.' },
+  { tag:'Bio', q:'What was Eric Cassell\'s critique of biomedicine?', a:'Cassell argued that biomedicine cannot fully address <strong>human suffering and illness experience</strong>. His concept of "Person" emphasizes: person-centered focus, centrality of the individual, limits of biomedicine, and critique of dogmatic assumptions.' },
+  { tag:'Bio', q:'What is the WHO (1948) definition of health?', a:'"A state of <strong>complete physical, mental, and social wellbeing</strong>, not merely the absence of disease or infirmity." This definition reflects a holistic view, moving beyond the purely biomedical perspective.' },
+  { tag:'Bio', q:'What are the 4 sources of self-efficacy in order of strength?', a:'1. <strong>Mastery Experience</strong> (most powerful — personal success)<br>2. <strong>Vicarious Experience</strong> (seeing similar others succeed)<br>3. <strong>Verbal Persuasion</strong> (encouragement from others)<br>4. <strong>Somatic &amp; Emotional States</strong> (physiological cues, mood)' },
+];
+
+let currentFilter = 'all';
+let filteredCards = [...cards];
+let currentIndex = 0;
+let studied = new Set();
+
+function getFiltered() {
+  if (currentFilter === 'all') return [...cards];
+  return cards.filter(c => c.tag === currentFilter);
+}
+
+function setFilter(f, btn) {
+  currentFilter = f;
+  document.querySelectorAll('#fcFilter .fc-filter-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  filteredCards = getFiltered();
+  currentIndex = 0;
+  document.getElementById('theCard').classList.remove('flipped');
+  renderCard();
+}
+
+function renderCard() {
+  if (!filteredCards.length) return;
+  const card = filteredCards[currentIndex];
+  document.getElementById('fcTag').textContent = card.tag;
+  document.getElementById('fcQuestion').textContent = card.q;
+  document.getElementById('fcAnswer').innerHTML = card.answer || card.a;
+  document.getElementById('fcPos').textContent = (currentIndex+1) + ' / ' + filteredCards.length;
+  document.getElementById('btnPrev').disabled = currentIndex === 0;
+  document.getElementById('btnNext').disabled = currentIndex === filteredCards.length-1;
+  document.getElementById('fcCounter').textContent = studied.size + ' / ' + cards.length + ' studied';
+  updateProgress();
+}
+
+function flipCard() {
+  const card = document.getElementById('theCard');
+  card.classList.toggle('flipped');
+  if (card.classList.contains('flipped')) {
+    studied.add(currentIndex + '_' + currentFilter);
+    document.getElementById('fcCounter').textContent = studied.size + ' / ' + cards.length + ' studied';
+    updateProgress();
+  }
+}
+
+function prevCard() {
+  if (currentIndex > 0) { currentIndex--; document.getElementById('theCard').classList.remove('flipped'); renderCard(); }
+}
+function nextCard() {
+  if (currentIndex < filteredCards.length-1) { currentIndex++; document.getElementById('theCard').classList.remove('flipped'); renderCard(); }
+}
+
+function updateProgress() {
+  const pct = Math.round((studied.size / cards.length) * 100);
+  document.getElementById('progressBar').style.width = pct + '%';
+  document.getElementById('progressLabel').textContent = studied.size + ' of ' + cards.length + ' flashcards studied (' + pct + '%)';
+}
+
+// =================== QUIZ DATA ===================
+const questions = [
+  // HBM
+  { topic:'HBM', q:'A person who believes they are NOT at risk for heart disease is low on which HBM construct?', opts:['Perceived Severity','Perceived Susceptibility','Perceived Barriers','Cues to Action'], ans:1, exp:'Perceived Susceptibility = belief about one\'s own risk. Low susceptibility means they don\'t think "it could happen to me."' },
+  { topic:'HBM', q:'According to the HBM, which construct is MOST consistently associated with whether a person takes health action?', opts:['Perceived Severity','Cues to Action','Perceived Barriers','Self-Efficacy'], ans:2, exp:'Perceived Barriers is the strongest predictor. Even if someone feels at risk, obstacles (cost, time, fear) prevent action.' },
+  { topic:'HBM', q:'Which researchers originally developed the Health Belief Model?', opts:['Prochaska & DiClemente','Bandura & Ajzen','Hochbaum, Rosenstock, Kegels & Leventhal','Engel & Cassell'], ans:2, exp:'The HBM was developed in the 1950s by Hochbaum, Rosenstock, Kegels & Leventhal at the US Public Health Service.' },
+  { topic:'HBM', q:'A woman sees her neighbor recover successfully from a heart attack and decides to start exercising. This is an example of what HBM construct?', opts:['Perceived Susceptibility','Cues to Action','Perceived Benefits','Perceived Severity'], ans:1, exp:'Seeing a neighbor\'s heart attack is an external Cue to Action — an environmental trigger that prompts health behavior.' },
+  { topic:'HBM', q:'In the HBM formula, Perceived Threat equals:', opts:['Benefits minus Barriers','Susceptibility plus Severity','Self-Efficacy plus Cues','Barriers minus Benefits'], ans:1, exp:'Perceived Threat = Perceived Susceptibility + Perceived Severity. This is the motivating force that prompts consideration of action.' },
+  // TPB
+  { topic:'TPB', q:'Which TPB construct captures the influence of friends and family on behavior?', opts:['Attitude toward behavior','Perceived Behavioral Control','Subjective Norm','Behavioral Intention'], ans:2, exp:'Subjective Norm = perceived social pressure from important others (normative beliefs × motivation to comply).' },
+  { topic:'TPB', q:'The IBM (Integrated Behavioral Model) was developed to address what limitation of the TPB?', opts:['The absence of social norms','The intention-behavior gap','The lack of attitudes','The absence of cues to action'], ans:1, exp:'IBM addresses the intention-behavior gap — even when people intend to act, they don\'t always follow through. IBM adds knowledge, skills, environmental constraints, and habit.' },
+  { topic:'TPB', q:'In the TPB, Perceived Behavioral Control is most similar to which concept from Bandura?', opts:['Outcome expectancy','Behavioral intention','Self-efficacy','Vicarious learning'], ans:2, exp:'PBC is similar to Bandura\'s self-efficacy — both refer to the perceived ability to perform a behavior.' },
+  // TTM
+  { topic:'TTM', q:'A person says "I\'m thinking about quitting smoking, maybe in the next few months." Which stage are they in?', opts:['Precontemplation','Contemplation','Preparation','Action'], ans:1, exp:'Contemplation = intending to act within the next 6 months, but not yet committed. Still ambivalent about pros and cons.' },
+  { topic:'TTM', q:'Which stage of change is characterized by a person having NO intention to change in the next 6 months?', opts:['Contemplation','Preparation','Precontemplation','Maintenance'], ans:2, exp:'Precontemplation = no intention to change within the next 6 months. May be in denial, uninformed, or demoralized.' },
+  { topic:'TTM', q:'According to the TTM, relapse is best understood as:', opts:['A permanent failure','A normal part of the change cycle','A return to Precontemplation always','Evidence the model doesn\'t work'], ans:1, exp:'Relapse is viewed as a normal, expected part of the change process. Most people cycle through stages multiple times before achieving maintenance.' },
+  { topic:'TTM', q:'Which processes of change are most appropriate for people in Precontemplation and Contemplation stages?', opts:['Behavioral processes (stimulus control)','Experiential processes (consciousness raising)','Maintenance processes','Action reinforcement'], ans:1, exp:'Experiential processes (like consciousness raising, dramatic relief, environmental reevaluation) are best for early stages.' },
+  // SEM
+  { topic:'SEM', q:'A public health department passes a law banning smoking in all restaurants. This intervention targets which SEM level?', opts:['Individual','Interpersonal','Organizational','Public Policy / Societal'], ans:3, exp:'Laws and regulations operate at the Public Policy/Societal level — the outermost level of the Social Ecological Model.' },
+  { topic:'SEM', q:'According to the Health Impact Pyramid, which intervention has the GREATEST population-level impact?', opts:['Counseling and education programs','Addressing socioeconomic factors','Clinical interventions','Long-lasting protective interventions'], ans:1, exp:'Addressing socioeconomic factors (bottom of the pyramid) has the greatest population impact — these address root causes of health disparities.' },
+  { topic:'SEM', q:'Who published the Health Impact Pyramid and in what year?', opts:['Bandura, 1977','Prochaska, 1983','Thomas Frieden, 2010','Ajzen, 1991'], ans:2, exp:'Thomas Frieden, former CDC Director, published the Health Impact Pyramid in 2010.' },
+  { topic:'SEM', q:'Placing fruits and vegetables near grocery checkout counters is an example of which level of the Health Impact Pyramid?', opts:['Counseling & Education','Clinical Interventions','Changing the Context','Socioeconomic Factors'], ans:2, exp:'Changing the Context = making healthy choices the default easy option. No individual effort needed — the environment does the work.' },
+  // Biomedical
+  { topic:'Bio', q:'Which model views the patient as a "mechanism in need of repair" and focuses solely on biological causes of disease?', opts:['Biopsychosocial Model','Social Ecological Model','Biomedical Model','Health Belief Model'], ans:2, exp:'The Biomedical Model reduces disease to cellular/biochemical mechanisms and treats the patient as the site of disease.' },
+  { topic:'Bio', q:'Who proposed the Biopsychosocial Model as a critique of biomedicine?', opts:['Eric Cassell','Thomas Frieden','George Engel','Albert Bandura'], ans:2, exp:'George Engel (1977) proposed the Biopsychosocial Model, arguing that biomedicine was reductionist and dualistic.' },
+  { topic:'Bio', q:'Self-efficacy is behavior-specific. What does this mean?', opts:['It applies equally to all behaviors','Being confident in one area doesn\'t guarantee confidence in another','It is always high in people who are healthy','It is the same as outcome expectancy'], ans:1, exp:'Self-efficacy is specific to a particular behavior. A person may have high self-efficacy for exercise but low self-efficacy for dietary change — these are separate.' },
+  { topic:'Bio', q:'What is the MOST powerful source of self-efficacy according to Bandura?', opts:['Verbal Persuasion','Vicarious Experience','Somatic & Emotional States','Mastery Experience'], ans:3, exp:'Mastery Experience (personal success) is the most powerful source of self-efficacy. Actually performing a behavior successfully builds the strongest confidence.' },
+];
+
+let currentQuestions = [];
+let quizAnswered = {};
+
+function startQuiz() {
+  const topic = document.getElementById('quizTopic').value;
+  const countSel = document.getElementById('quizCount').value;
+  let pool = topic === 'all' ? [...questions] : questions.filter(q => q.topic === topic);
+  pool = shuffle(pool);
+  const count = countSel === 'all' ? pool.length : Math.min(parseInt(countSel), pool.length);
+  currentQuestions = pool.slice(0, count);
+  quizAnswered = {};
+  renderQuiz();
+}
+
+function shuffle(arr) {
+  for (let i = arr.length-1; i > 0; i--) {
+    const j = Math.floor(Math.random()*(i+1));
+    [arr[i],arr[j]] = [arr[j],arr[i]];
+  }
+  return arr;
+}
+
+function renderQuiz() {
+  const area = document.getElementById('quizArea');
+  let html = '';
+  currentQuestions.forEach((q, qi) => {
+    html += `<div class="quiz-q" id="qq${qi}">
+      <div class="q-num">Question ${qi+1} of ${currentQuestions.length} • ${q.topic}</div>
+      <div class="q-text">${q.q}</div>
+      <div class="options">`;
+    q.opts.forEach((opt, oi) => {
+      html += `<button class="option-btn" onclick="selectAnswer(${qi},${oi})" id="opt_${qi}_${oi}">${opt}</button>`;
+    });
+    html += `</div><div id="fb_${qi}"></div></div>`;
+  });
+  html += `<div style="text-align:center;margin:20px 0"><button class="start-btn" onclick="submitQuiz()">Submit Quiz →</button></div>`;
+  area.innerHTML = html;
+}
+
+function selectAnswer(qi, oi) {
+  if (quizAnswered[qi] !== undefined) return;
+  quizAnswered[qi] = oi;
+  document.querySelectorAll(`#qq${qi} .option-btn`).forEach(b => b.disabled = true);
+  const q = currentQuestions[qi];
+  const isCorrect = oi === q.ans;
+  document.getElementById(`opt_${qi}_${oi}`).classList.add(isCorrect ? 'correct' : 'incorrect');
+  if (!isCorrect) document.getElementById(`opt_${qi}_${q.ans}`).classList.add('reveal');
+  const fb = document.getElementById(`fb_${qi}`);
+  fb.className = 'feedback ' + (isCorrect ? 'correct' : 'incorrect');
+  fb.innerHTML = (isCorrect ? '✅ Correct! ' : '❌ Incorrect. ') + q.exp;
+}
+
+function submitQuiz() {
+  // Auto-answer unanswered
+  currentQuestions.forEach((q, qi) => {
+    if (quizAnswered[qi] === undefined) { quizAnswered[qi] = -1; }
+  });
+  const score = Object.values(quizAnswered).filter((a,i) => a === currentQuestions[i].ans).length;
+  const pct = Math.round((score / currentQuestions.length) * 100);
+  const msg = pct >= 90 ? "🌟 Excellent! You're ready for the exam!" : pct >= 70 ? "👍 Good job! Review the ones you missed." : "📖 Keep reviewing — you've got this!";
+  document.getElementById('quizArea').innerHTML = `
+    <div class="quiz-result">
+      <div class="score">${score}/${currentQuestions.length}</div>
+      <div class="score-label">${pct}% correct</div>
+      <div class="result-msg">${msg}</div>
+      <button class="start-btn" onclick="document.getElementById('quizArea').innerHTML=''; startQuiz();" style="background:white;color:#4f46e5">Try Again</button>
+    </div>`;
+}
+
+// =================== KEY TERMS DATA ===================
+const terms = [
+  { tag:'HBM', term:'Perceived Susceptibility', def:'Belief about one\'s own risk of getting a disease or condition. The "Am I at risk?" component of the HBM.' },
+  { tag:'HBM', term:'Perceived Severity', def:'Belief about the seriousness of a disease and its consequences (medical, social, psychological).' },
+  { tag:'HBM', term:'Perceived Benefits', def:'Belief in the effectiveness of a recommended action to reduce risk or severity.' },
+  { tag:'HBM', term:'Perceived Barriers', def:'Belief about obstacles (physical, psychological, financial) to taking action. Strongest predictor of behavior.' },
+  { tag:'HBM', term:'Cues to Action', def:'Internal or external triggers that prompt health behavior (symptoms, media campaigns, advice from doctors).' },
+  { tag:'HBM', term:'Perceived Threat', def:'Perceived Susceptibility + Perceived Severity. The motivating force that drives consideration of health action.' },
+  { tag:'TPB', term:'Behavioral Intention', def:'The strongest predictor of behavior in the TPB. Represents a person\'s motivation and plan to perform a behavior.' },
+  { tag:'TPB', term:'Subjective Norm', def:'Perceived social pressure from important others to perform or not perform a behavior (normative beliefs × motivation to comply).' },
+  { tag:'TPB', term:'Perceived Behavioral Control (PBC)', def:'Perceived ease or difficulty of performing a behavior. Similar to self-efficacy. Influences both intention and behavior directly.' },
+  { tag:'TPB', term:'Intention-Behavior Gap', def:'The gap between intending to do something and actually doing it. IBM was developed to address this gap.' },
+  { tag:'TTM', term:'Precontemplation', def:'Stage where a person has no intention to change behavior in the next 6 months. May be in denial or uninformed.' },
+  { tag:'TTM', term:'Contemplation', def:'Stage where a person is thinking about change within the next 6 months but is ambivalent about pros and cons.' },
+  { tag:'TTM', term:'Preparation', def:'Stage where a person plans to take action within the next 30 days and has taken some initial steps.' },
+  { tag:'TTM', term:'Action', def:'Stage where a person has made a behavior change within the past 6 months. High risk of relapse.' },
+  { tag:'TTM', term:'Maintenance', def:'Stage where behavior change has been sustained for more than 6 months. Focus is on preventing relapse.' },
+  { tag:'TTM', term:'Decisional Balance', def:'The TTM concept of weighing the pros and cons of changing. Pros must outweigh cons for forward progression.' },
+  { tag:'SEM', term:'Social Ecological Model (SEM)', def:'A framework recognizing that health behaviors are shaped by multiple levels: individual, interpersonal, organizational, and policy.' },
+  { tag:'SEM', term:'Health Impact Pyramid', def:'Frieden\'s (2010) model showing that lower-level interventions (socioeconomic, context-changing) have greater population impact than upper-level ones (counseling, clinical).' },
+  { tag:'SEM', term:'Upstream Factors', def:'Root causes of health disparities — poverty, education, housing, systemic inequity. Addressed at the policy/societal level of SEM.' },
+  { tag:'Bio', term:'Biomedical Model', def:'A model of medicine that attributes disease solely to biological causes (cellular, biochemical). Reductionist and dualistic.' },
+  { tag:'Bio', term:'Biopsychosocial Model', def:'Engel\'s (1977) model integrating biological, psychological, and social factors in understanding health and illness.' },
+  { tag:'Bio', term:'Self-Efficacy', def:'Bandura\'s concept (1977) — a person\'s belief in their ability to perform a specific behavior. Behavior-specific, not general confidence.' },
+  { tag:'Bio', term:'Mastery Experience', def:'Personal successes (or failures) that are the most powerful source of self-efficacy.' },
+  { tag:'Bio', term:'Vicarious Experience', def:'Observing similar others perform a behavior successfully — a key source of self-efficacy ("if they can, I can").' },
+  { tag:'Bio', term:'Reductionism', def:'A characteristic of biomedicine — reducing complex phenomena to their smallest component parts (e.g., disease = cellular malfunction).' },
+];
+
+function renderTerms(filter) {
+  const grid = document.getElementById('termsGrid');
+  const list = filter === 'all' ? terms : terms.filter(t => t.tag === filter);
+  grid.innerHTML = list.map(t => `
+    <div class="term-card">
+      <div class="term">${t.term} <span style="font-size:0.72rem;font-weight:600;background:#e0e7ff;color:#4338ca;padding:2px 8px;border-radius:999px;margin-left:4px">${t.tag}</span></div>
+      <div class="def">${t.def}</div>
+    </div>`).join('');
+}
+
+function filterTerms(f, btn) {
+  document.querySelectorAll('#termsFilter .fc-filter-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  renderTerms(f);
+}
+
+// =================== INIT ===================
+filteredCards = [...cards];
+renderCard();
+renderTerms('all');
+</script>
+</body>
+</html>

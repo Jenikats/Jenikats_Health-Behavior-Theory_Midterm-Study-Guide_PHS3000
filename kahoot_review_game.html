@@ -1,0 +1,398 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Health Behavior Theory — Kahoot Review</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: 'Segoe UI', system-ui, sans-serif; background: #46178f; min-height: 100vh; display: flex; flex-direction: column; }
+
+  /* SPLASH */
+  #splash { display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 100vh; padding: 24px; text-align: center; }
+  #splash h1 { font-size: 2.8rem; font-weight: 900; color: white; text-shadow: 0 4px 20px rgba(0,0,0,0.3); }
+  #splash .subtitle { color: rgba(255,255,255,0.8); font-size: 1.1rem; margin: 10px 0 6px; }
+  #splash .creator { color: rgba(255,255,255,0.6); font-size: 0.88rem; font-style: italic; margin-bottom: 32px; }
+  .big-btn { background: #ff3355; color: white; border: none; border-radius: 12px; padding: 18px 48px; font-size: 1.3rem; font-weight: 800; cursor: pointer; box-shadow: 0 6px 20px rgba(0,0,0,0.25); transition: transform 0.15s, box-shadow 0.15s; letter-spacing: 0.5px; }
+  .big-btn:hover { transform: translateY(-2px); box-shadow: 0 10px 28px rgba(0,0,0,0.3); }
+  .big-btn.green { background: #26890c; }
+  .q-count { color: rgba(255,255,255,0.7); font-size: 0.9rem; margin-top: 16px; }
+  .topic-badges { display: flex; flex-wrap: wrap; gap: 8px; justify-content: center; margin: 20px 0; }
+  .tbadge { background: rgba(255,255,255,0.15); color: white; padding: 6px 14px; border-radius: 999px; font-size: 0.82rem; font-weight: 600; }
+
+  /* GAME */
+  #game { display: none; flex-direction: column; min-height: 100vh; }
+
+  /* TOP BAR */
+  .topbar { background: #46178f; padding: 12px 20px; display: flex; align-items: center; justify-content: space-between; }
+  .q-progress { color: rgba(255,255,255,0.8); font-size: 0.9rem; font-weight: 700; }
+  .timer-wrap { display: flex; flex-direction: column; align-items: center; }
+  .timer-circle { width: 60px; height: 60px; border-radius: 50%; background: white; display: flex; align-items: center; justify-content: center; font-size: 1.5rem; font-weight: 900; color: #46178f; box-shadow: 0 3px 12px rgba(0,0,0,0.2); transition: background 0.5s, color 0.5s; }
+  .timer-circle.warning { background: #f59e0b; color: white; }
+  .timer-circle.danger { background: #ef4444; color: white; animation: pulse 0.5s infinite alternate; }
+  @keyframes pulse { from { transform: scale(1); } to { transform: scale(1.08); } }
+  .score-display { color: white; font-size: 0.85rem; font-weight: 700; text-align: right; }
+  .score-display .pts { font-size: 1.3rem; }
+
+  /* QUESTION AREA */
+  .q-area { background: white; margin: 0; padding: 28px 24px 24px; text-align: center; }
+  .q-topic { display: inline-block; background: #46178f; color: white; padding: 4px 14px; border-radius: 999px; font-size: 0.78rem; font-weight: 700; margin-bottom: 12px; letter-spacing: 0.5px; }
+  .q-text { font-size: 1.25rem; font-weight: 800; color: #1a1a2e; line-height: 1.45; max-width: 700px; margin: 0 auto; }
+  .q-num-bar { font-size: 0.8rem; color: #888; margin-top: 10px; }
+
+  /* TIMER BAR */
+  .timer-bar-wrap { height: 8px; background: #ddd; }
+  .timer-bar { height: 8px; background: linear-gradient(90deg, #26890c, #ff3355); transition: width 1s linear; }
+
+  /* ANSWER GRID */
+  .answers { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; padding: 20px; flex: 1; }
+  @media (max-width: 500px) { .answers { grid-template-columns: 1fr; } .q-text { font-size: 1.05rem; } .big-btn { font-size: 1.1rem; padding: 15px 32px; } }
+
+  .ans-btn { border: none; border-radius: 12px; padding: 20px 18px; font-size: 1rem; font-weight: 700; color: white; cursor: pointer; display: flex; align-items: center; gap: 12px; text-align: left; transition: transform 0.12s, opacity 0.2s; box-shadow: 0 4px 14px rgba(0,0,0,0.18); min-height: 80px; line-height: 1.35; }
+  .ans-btn:hover:not(:disabled) { transform: scale(1.03); }
+  .ans-btn:disabled { cursor: default; }
+  .ans-btn .shape { width: 36px; height: 36px; border-radius: 6px; flex-shrink: 0; display: flex; align-items: center; justify-content: center; font-size: 1.3rem; background: rgba(0,0,0,0.15); }
+  .ans-btn.a { background: #e21b3c; }
+  .ans-btn.b { background: #1368ce; }
+  .ans-btn.c { background: #26890c; }
+  .ans-btn.d { background: #d89e00; }
+
+  .ans-btn.correct { background: #26890c !important; animation: bounceIn 0.4s; }
+  .ans-btn.wrong { background: #9e1b1b !important; opacity: 0.6; }
+  .ans-btn.dim { opacity: 0.4; }
+  @keyframes bounceIn { 0%{transform:scale(0.9)} 60%{transform:scale(1.06)} 100%{transform:scale(1)} }
+
+  /* FEEDBACK OVERLAY */
+  .feedback-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.7); align-items: center; justify-content: center; z-index: 100; flex-direction: column; padding: 20px; text-align: center; }
+  .feedback-overlay.show { display: flex; }
+  .fb-card { background: white; border-radius: 20px; padding: 32px 28px; max-width: 520px; width: 100%; }
+  .fb-icon { font-size: 3.5rem; margin-bottom: 10px; }
+  .fb-result { font-size: 1.6rem; font-weight: 900; margin-bottom: 8px; }
+  .fb-result.correct { color: #26890c; }
+  .fb-result.wrong { color: #e21b3c; }
+  .fb-answer { font-size: 1rem; color: #444; margin-bottom: 12px; font-weight: 600; }
+  .fb-exp { font-size: 0.9rem; color: #555; line-height: 1.6; background: #f3f4f6; border-radius: 10px; padding: 12px; margin-bottom: 16px; text-align: left; }
+  .fb-pts { font-size: 1.1rem; font-weight: 800; color: #46178f; margin-bottom: 18px; }
+  .next-btn { background: #46178f; color: white; border: none; border-radius: 10px; padding: 13px 36px; font-size: 1rem; font-weight: 800; cursor: pointer; transition: background 0.2s; }
+  .next-btn:hover { background: #6d28d9; }
+
+  /* TIMEOUT OVERLAY */
+  .timeout-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.75); align-items: center; justify-content: center; z-index: 100; flex-direction: column; }
+  .timeout-overlay.show { display: flex; }
+  .timeout-card { background: white; border-radius: 20px; padding: 32px 28px; text-align: center; max-width: 420px; width: 90%; }
+  .timeout-card h2 { font-size: 2rem; color: #e21b3c; font-weight: 900; }
+  .timeout-card p { margin: 10px 0 20px; color: #444; font-size: 1rem; }
+
+  /* RESULTS */
+  #results { display: none; min-height: 100vh; background: #46178f; align-items: center; justify-content: center; flex-direction: column; padding: 24px; text-align: center; }
+  .podium { font-size: 5rem; margin-bottom: 10px; }
+  .final-score { font-size: 3rem; font-weight: 900; color: white; }
+  .final-label { font-size: 1.1rem; color: rgba(255,255,255,0.8); margin: 6px 0 4px; }
+  .final-pct { font-size: 1.5rem; font-weight: 800; color: #fbbf24; margin-bottom: 20px; }
+  .result-msg { background: rgba(255,255,255,0.15); border-radius: 14px; padding: 14px 22px; color: white; font-size: 1rem; margin-bottom: 24px; max-width: 480px; }
+  .summary-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin-bottom: 28px; max-width: 420px; }
+  .s-cell { background: rgba(255,255,255,0.12); border-radius: 12px; padding: 14px 10px; }
+  .s-cell .val { font-size: 1.6rem; font-weight: 900; color: white; }
+  .s-cell .lbl { font-size: 0.75rem; color: rgba(255,255,255,0.7); margin-top: 2px; }
+  .play-again { background: white; color: #46178f; border: none; border-radius: 12px; padding: 15px 40px; font-size: 1.1rem; font-weight: 800; cursor: pointer; transition: transform 0.15s; }
+  .play-again:hover { transform: scale(1.04); }
+</style>
+</head>
+<body>
+
+<!-- SPLASH -->
+<div id="splash">
+  <div style="font-size:4rem;margin-bottom:16px">🧠</div>
+  <h1>Health Behavior Theory</h1>
+  <p class="subtitle">Midterm Kahoot Review</p>
+  <p class="creator">Created by Jenika Towana Scott, M.S.W. (PhD Student)</p>
+  <div class="topic-badges">
+    <span class="tbadge">🔬 Biomedical Model</span>
+    <span class="tbadge">💭 Health Belief Model</span>
+    <span class="tbadge">🔄 Stages of Change</span>
+    <span class="tbadge">📋 TPB &amp; IBM</span>
+    <span class="tbadge">🌍 Social Ecological Model</span>
+    <span class="tbadge">🔺 Health Impact Pyramid</span>
+    <span class="tbadge">💪 Self-Efficacy</span>
+  </div>
+  <button class="big-btn" onclick="startGame()">🚀 Play Now!</button>
+  <div class="q-count">30 Questions • Multiple Choice • Timed</div>
+</div>
+
+<!-- GAME -->
+<div id="game">
+  <div class="topbar">
+    <div class="q-progress" id="qProgress">Q 1 / 30</div>
+    <div class="timer-wrap">
+      <div class="timer-circle" id="timerCircle">30</div>
+    </div>
+    <div class="score-display">
+      <div class="pts" id="scoreDisplay">0</div>
+      <div>pts</div>
+    </div>
+  </div>
+  <div class="timer-bar-wrap"><div class="timer-bar" id="timerBar" style="width:100%"></div></div>
+  <div class="q-area">
+    <div class="q-topic" id="qTopic">HBM</div>
+    <div class="q-text" id="qText">Question text here</div>
+    <div class="q-num-bar" id="qNumBar"></div>
+  </div>
+  <div class="answers" id="answersGrid"></div>
+</div>
+
+<!-- FEEDBACK OVERLAY -->
+<div class="feedback-overlay" id="feedbackOverlay">
+  <div class="fb-card">
+    <div class="fb-icon" id="fbIcon"></div>
+    <div class="fb-result" id="fbResult"></div>
+    <div class="fb-answer" id="fbAnswer"></div>
+    <div class="fb-exp" id="fbExp"></div>
+    <div class="fb-pts" id="fbPts"></div>
+    <button class="next-btn" onclick="nextQuestion()">Next →</button>
+  </div>
+</div>
+
+<!-- TIMEOUT -->
+<div class="timeout-overlay" id="timeoutOverlay">
+  <div class="timeout-card">
+    <h2>⏰ Time's Up!</h2>
+    <p id="timeoutAnswer"></p>
+    <button class="next-btn" onclick="nextQuestion()">Next →</button>
+  </div>
+</div>
+
+<!-- RESULTS -->
+<div id="results">
+  <div class="podium" id="podiumEmoji">🏆</div>
+  <div class="final-score" id="finalScore">0</div>
+  <div class="final-label">points</div>
+  <div class="final-pct" id="finalPct">0% correct</div>
+  <div class="summary-grid">
+    <div class="s-cell"><div class="val" id="sCorrect">0</div><div class="lbl">Correct</div></div>
+    <div class="s-cell"><div class="val" id="sWrong">0</div><div class="lbl">Incorrect</div></div>
+    <div class="s-cell"><div class="val" id="sStreak">0</div><div class="lbl">Best Streak</div></div>
+  </div>
+  <div class="result-msg" id="resultMsg"></div>
+  <button class="play-again" onclick="resetGame()">🔄 Play Again</button>
+</div>
+
+<script>
+const ALL_QUESTIONS = [
+  // === BIOMEDICAL MODEL ===
+  { topic:'Biomedical Model', q:'Which model dominated 20th-century medicine and views patients as "mechanisms in need of repair"?', opts:['Biopsychosocial Model','Social Ecological Model','Biomedical Model','Health Belief Model'], ans:2, exp:'The Biomedical Model is reductionist and dualistic — it reduces disease to cellular/biochemical causes and treats the patient as the site of disease, ignoring psychological and social factors.' },
+  { topic:'Biomedical Model', q:'The Biomedical Model is criticized for being "reductionist." What does this mean?', opts:['It focuses too much on social factors','It reduces disease to the smallest biological component only','It applies to too many diseases','It is too expensive to implement'], ans:1, exp:'Reductionism = breaking disease down to its smallest parts (cells, molecules) and ignoring larger psychological and social influences on health.' },
+  { topic:'Biomedical Model', q:'Who proposed the Biopsychosocial Model in 1977 to replace the Biomedical Model?', opts:['Albert Bandura','Eric Cassell','Thomas Frieden','George Engel'], ans:3, exp:'George Engel (1977) argued that biomedicine was reductionist and dualistic, and proposed the Biopsychosocial Model incorporating biological, psychological, AND social factors.' },
+  { topic:'Biomedical Model', q:'Eric Cassell\'s "Concept of Person" critiques biomedicine by arguing it fails to address what?', opts:['Economic costs of treatment','Human suffering and the illness experience','Laboratory testing accuracy','Physician training requirements'], ans:1, exp:'Cassell argued that biomedicine cannot fully address human suffering. His work emphasized person-centered focus, centrality of the individual, and the limits of the purely biomedical approach.' },
+  { topic:'Biomedical Model', q:'The WHO (1948) definition of health includes which THREE dimensions?', opts:['Physical, Mental, Financial','Physical, Mental, Social','Biological, Psychological, Spiritual','Individual, Community, National'], ans:1, exp:'"Health is a state of complete physical, mental, and social wellbeing, not merely the absence of disease or infirmity." — WHO, 1948. This moved beyond the purely biomedical view.' },
+
+  // === HEALTH BELIEF MODEL ===
+  { topic:'Health Belief Model', q:'The Health Belief Model was originally developed to explain why people refused to get what?', opts:['Flu vaccines','Free tuberculosis (TB) screenings','HIV tests','Cancer screenings'], ans:1, exp:'In the 1950s, researchers at the US Public Health Service developed the HBM to understand why people wouldn\'t get free TB screenings even when offered at no cost.' },
+  { topic:'Health Belief Model', q:'Which HBM construct asks "Am I at risk for this condition?"', opts:['Perceived Severity','Perceived Benefits','Perceived Susceptibility','Cues to Action'], ans:2, exp:'Perceived Susceptibility = a person\'s belief about their own chance of getting a disease or condition. Low susceptibility = "That won\'t happen to me."' },
+  { topic:'Health Belief Model', q:'Which HBM construct is MOST consistently the strongest predictor of health behavior?', opts:['Perceived Severity','Perceived Barriers','Self-Efficacy','Cues to Action'], ans:1, exp:'Perceived Barriers is the most powerful predictor. Even if a person feels at risk, practical and psychological obstacles (cost, fear, inconvenience) are the biggest deterrents to action.' },
+  { topic:'Health Belief Model', q:'Perceived Threat in the HBM equals which combination of constructs?', opts:['Benefits minus Barriers','Cues to Action plus Self-Efficacy','Perceived Susceptibility plus Perceived Severity','Barriers minus Benefits'], ans:2, exp:'Perceived Threat = Perceived Susceptibility + Perceived Severity. This combination creates the motivating force that drives a person to consider taking health action.' },
+  { topic:'Health Belief Model', q:'A doctor tells a patient "You are at high risk for diabetes — you should change your diet." This is an example of which HBM construct?', opts:['Perceived Barriers','Perceived Severity','Self-Efficacy','Cues to Action'], ans:3, exp:'A doctor\'s recommendation is an external Cue to Action — a trigger (external or internal) that prompts a person to consider or take health action.' },
+  { topic:'Health Belief Model', q:'When was Self-Efficacy added to the Health Belief Model, and by whom?', opts:['1950s — Hochbaum & Rosenstock','1977 — Bandura','1988 — Rosenstock, Strecher & Becker','2000 — WHO researchers'], ans:2, exp:'Self-Efficacy was added to the HBM in 1988 by Rosenstock, Strecher & Becker because the original 5-construct model didn\'t account for complex, long-term behaviors requiring sustained confidence.' },
+  { topic:'Health Belief Model', q:'Which researchers are credited with originally developing the Health Belief Model?', opts:['Prochaska & DiClemente','Bandura & Ajzen','Engel & Cassell','Hochbaum, Rosenstock, Kegels & Leventhal'], ans:3, exp:'The HBM was developed by Hochbaum, Rosenstock, Kegels & Leventhal at the US Public Health Service in the 1950s.' },
+
+  // === SELF-EFFICACY ===
+  { topic:'Self-Efficacy', q:'Albert Bandura defined self-efficacy as which of the following?', opts:['Belief that a behavior will lead to a desired outcome','Confidence in one\'s ability to perform a specific behavior','General self-confidence across all life areas','Motivation to begin a behavior'], ans:1, exp:'Self-efficacy = belief in one\'s ability to PERFORM a specific behavior. It is behavior-specific — not general confidence. It is also different from outcome expectancy (belief the action will work).' },
+  { topic:'Self-Efficacy', q:'Which source of self-efficacy is considered the MOST powerful?', opts:['Verbal Persuasion','Vicarious Experience','Somatic & Emotional States','Mastery Experience'], ans:3, exp:'Mastery Experience (personal performance accomplishments) is the most powerful source. Actually doing something successfully creates the strongest self-efficacy. Past failures can also lower it.' },
+  { topic:'Self-Efficacy', q:'A student watches a classmate successfully complete a challenging research paper and thinks "If she can do it, I can too." This is which source of self-efficacy?', opts:['Mastery Experience','Vicarious Experience','Verbal Persuasion','Somatic State'], ans:1, exp:'Vicarious Experience = observing others (especially similar others) successfully perform a behavior. Social modeling is especially powerful when the observer identifies with the model.' },
+  { topic:'Self-Efficacy', q:'Self-efficacy is BEST described as "behavior-specific." What does this mean?', opts:['It only applies to physical behaviors','Confidence in one area doesn\'t automatically transfer to another','It increases with age','It is the same as motivation'], ans:1, exp:'Self-efficacy is specific to particular behaviors. Someone may have high self-efficacy for exercise but low self-efficacy for quitting smoking — these are separate beliefs.' },
+
+  // === THEORY OF PLANNED BEHAVIOR / IBM ===
+  { topic:'TPB & IBM', q:'What are the THREE main determinants of behavioral intention in the Theory of Planned Behavior?', opts:['Knowledge, Skill, Motivation','Attitude, Subjective Norm, Perceived Behavioral Control','Beliefs, Values, Culture','Susceptibility, Severity, Benefits'], ans:1, exp:'TPB: Attitude toward the behavior + Subjective Norm + Perceived Behavioral Control → Behavioral Intention → Behavior. Intention is the strongest direct predictor of behavior.' },
+  { topic:'TPB & IBM', q:'In the TPB, "Subjective Norm" refers to what?', opts:['Personal attitude toward the behavior','The person\'s perceived ease of doing the behavior','Perceived social pressure from important others','Cultural norms around health behavior'], ans:2, exp:'Subjective Norm = perceived social pressure. "What would people important to me think if I did/didn\'t do this?" It is calculated as normative beliefs × motivation to comply.' },
+  { topic:'TPB & IBM', q:'Perceived Behavioral Control in the TPB is most similar to which Bandura concept?', opts:['Outcome Expectancy','Vicarious Experience','Self-Efficacy','Mastery Experience'], ans:2, exp:'PBC is very similar to Bandura\'s Self-Efficacy — both capture the perceived ability to perform a behavior. PBC also captures perceptions of external control factors.' },
+  { topic:'TPB & IBM', q:'What is the "intention-behavior gap" that the Integrated Behavioral Model (IBM) was designed to address?', opts:['The gap between knowledge and attitude','The gap between intending to act and actually acting','The difference between risk perception and behavior','The gap between social norms and personal values'], ans:1, exp:'The intention-behavior gap = even when people intend to change, they often don\'t follow through. IBM adds knowledge/skills, environmental constraints, salience, and habit to explain this gap.' },
+  { topic:'TPB & IBM', q:'Which of the following does the IBM add to the TPB that the TPB does NOT include?', opts:['Attitudes toward behavior','Subjective norms','Behavioral intention','Knowledge and skills required for action'], ans:3, exp:'IBM adds: Knowledge & Skills, Environmental Constraints, Salience of the behavior, and Habit/automaticity. These bridge the gap between intention and actual behavior.' },
+
+  // === TRANSTHEORETICAL MODEL ===
+  { topic:'Stages of Change', q:'Who developed the Transtheoretical Model (TTM)?', opts:['Bandura & Ajzen','Hochbaum & Rosenstock','Prochaska & DiClemente','Engel & Cassell'], ans:2, exp:'Prochaska & DiClemente developed the TTM in 1983 based on research on smoking cessation. It\'s called "transtheoretical" because it integrates processes from multiple theories.' },
+  { topic:'Stages of Change', q:'A person says: "I know smoking is bad, but I have no plans to quit anytime soon." Which stage are they in?', opts:['Contemplation','Preparation','Precontemplation','Maintenance'], ans:2, exp:'Precontemplation = no intention to change in the next 6 months. The person may be in denial, uninformed, or demoralized from past failures.' },
+  { topic:'Stages of Change', q:'In the TTM, the Action stage is defined as having made a behavior change within what time frame?', opts:['More than 6 months ago','Less than 6 months ago','Less than 30 days ago','More than 1 year ago'], ans:1, exp:'Action = the person has made the behavior change within the PAST 6 MONTHS. This stage requires the most commitment and is the stage with the highest risk of relapse.' },
+  { topic:'Stages of Change', q:'Which TTM stage involves planning to act within the NEXT 30 DAYS?', opts:['Contemplation','Precontemplation','Maintenance','Preparation'], ans:3, exp:'Preparation = ready to take action within the next 30 days and has begun taking small steps. The person has crossed the threshold from thinking about change to actively planning it.' },
+  { topic:'Stages of Change', q:'In the TTM, relapse (returning to old behavior) is best understood as what?', opts:['A complete failure of the model','A sign that the person should stop trying','A normal, expected part of the change process','A return directly to Precontemplation'], ans:2, exp:'Relapse is a normal part of the change cycle in the TTM. Most people cycle through stages multiple times before achieving long-term maintenance. The model represents a SPIRAL, not a ladder.' },
+  { topic:'Stages of Change', q:'Decisional Balance in the TTM involves weighing what against each other?', opts:['Benefits vs. Barriers','Pros vs. Cons of changing','Risk vs. Severity','Social pressure vs. Personal desire'], ans:1, exp:'Decisional Balance = Pros vs. Cons of changing. In early stages, cons outweigh pros. As people progress through stages, the pros of changing increase relative to the cons.' },
+
+  // === SOCIAL ECOLOGICAL MODEL / PYRAMID ===
+  { topic:'Social Ecological Model', q:'Which level of the Social Ecological Model includes laws, regulations, and systemic social inequities?', opts:['Individual','Interpersonal','Organizational','Public Policy / Societal'], ans:3, exp:'The Public Policy / Societal level is the outermost level of the SEM — it includes local, state, and federal laws, policies, regulations, and the broader social forces that shape everyone\'s health.' },
+  { topic:'Social Ecological Model', q:'The Health Impact Pyramid shows that interventions at the BOTTOM of the pyramid have what kind of impact?', opts:['Greatest impact on individuals only','Least population impact','Greatest population impact with least individual effort required','No impact on chronic disease'], ans:2, exp:'Bottom of pyramid = GREATEST population impact and LEAST individual effort required. Addressing socioeconomic factors and changing default contexts affects entire populations without requiring individual action.' },
+  { topic:'Social Ecological Model', q:'Placing a salad bar prominently in a school cafeteria is an example of which level of the Health Impact Pyramid?', opts:['Counseling & Education','Clinical Interventions','Changing the Context','Socioeconomic Factors'], ans:2, exp:'Changing the Context = making the healthy choice the default/easy choice. The environment is designed so people naturally choose healthier options without requiring individual willpower or knowledge.' },
+  { topic:'Social Ecological Model', q:'Which level of the Health Impact Pyramid has the LEAST population impact but requires the MOST individual effort?', opts:['Socioeconomic Factors','Changing the Context','Long-lasting Protective Interventions','Counseling & Education'], ans:3, exp:'Counseling & Education (the TOP of the pyramid) requires significant individual effort and motivation. It helps individuals but reaches fewer people and has the least population-level impact.' },
+];
+
+let questions = [];
+let currentQ = 0;
+let score = 0;
+let correct = 0;
+let wrong = 0;
+let streak = 0;
+let bestStreak = 0;
+let timer;
+let timeLeft = 30;
+let answered = false;
+const SHAPES = ['▲','◆','●','✦'];
+const COLORS = ['a','b','c','d'];
+const MAX_TIME = 30;
+
+function shuffle(arr) {
+  const a = [...arr];
+  for (let i = a.length-1; i > 0; i--) {
+    const j = Math.floor(Math.random()*(i+1));
+    [a[i],a[j]] = [a[j],a[i]];
+  }
+  return a;
+}
+
+function startGame() {
+  questions = shuffle(ALL_QUESTIONS);
+  currentQ = 0; score = 0; correct = 0; wrong = 0; streak = 0; bestStreak = 0;
+  document.getElementById('splash').style.display = 'none';
+  document.getElementById('results').style.display = 'none';
+  document.getElementById('game').style.display = 'flex';
+  loadQuestion();
+}
+
+function loadQuestion() {
+  answered = false;
+  const q = questions[currentQ];
+  document.getElementById('qProgress').textContent = 'Q ' + (currentQ+1) + ' / ' + questions.length;
+  document.getElementById('scoreDisplay').textContent = score.toLocaleString();
+  document.getElementById('qTopic').textContent = q.topic;
+  document.getElementById('qText').textContent = q.q;
+  document.getElementById('qNumBar').textContent = 'Question ' + (currentQ+1) + ' of ' + questions.length;
+
+  // Build answers (shuffle option order but track correct)
+  const indices = shuffle([0,1,2,3]);
+  const correctDisplay = indices.indexOf(q.ans);
+  const grid = document.getElementById('answersGrid');
+  grid.innerHTML = '';
+  indices.forEach((origIdx, displayIdx) => {
+    const btn = document.createElement('button');
+    btn.className = 'ans-btn ' + COLORS[displayIdx];
+    btn.innerHTML = `<div class="shape">${SHAPES[displayIdx]}</div><span>${q.opts[origIdx]}</span>`;
+    btn.dataset.orig = origIdx;
+    btn.onclick = () => selectAnswer(displayIdx, origIdx === q.ans, q);
+    grid.appendChild(btn);
+  });
+
+  startTimer();
+}
+
+function startTimer() {
+  timeLeft = MAX_TIME;
+  updateTimer();
+  clearInterval(timer);
+  timer = setInterval(() => {
+    timeLeft--;
+    updateTimer();
+    if (timeLeft <= 0) {
+      clearInterval(timer);
+      if (!answered) timeOut();
+    }
+  }, 1000);
+}
+
+function updateTimer() {
+  const tc = document.getElementById('timerCircle');
+  const tb = document.getElementById('timerBar');
+  tc.textContent = timeLeft;
+  tb.style.width = (timeLeft / MAX_TIME * 100) + '%';
+  tc.className = 'timer-circle' + (timeLeft <= 5 ? ' danger' : timeLeft <= 10 ? ' warning' : '');
+}
+
+function selectAnswer(displayIdx, isCorrect, q) {
+  if (answered) return;
+  answered = true;
+  clearInterval(timer);
+
+  const btns = document.querySelectorAll('.ans-btn');
+  btns.forEach((b, i) => {
+    b.disabled = true;
+    if (i === displayIdx) {
+      b.classList.add(isCorrect ? 'correct' : 'wrong');
+    } else {
+      const origIdx = parseInt(b.dataset.orig);
+      if (origIdx === q.ans) b.classList.add('correct');
+      else b.classList.add('dim');
+    }
+  });
+
+  // Points: speed bonus
+  let pts = 0;
+  if (isCorrect) {
+    pts = Math.round(500 + (timeLeft / MAX_TIME) * 500);
+    score += pts; correct++; streak++;
+    if (streak > bestStreak) bestStreak = streak;
+  } else {
+    wrong++; streak = 0;
+  }
+  document.getElementById('scoreDisplay').textContent = score.toLocaleString();
+
+  // Show feedback
+  const ov = document.getElementById('feedbackOverlay');
+  document.getElementById('fbIcon').textContent = isCorrect ? '✅' : '❌';
+  const fbRes = document.getElementById('fbResult');
+  fbRes.textContent = isCorrect ? (streak > 1 ? '🔥 Correct! ' + streak + ' streak!' : 'Correct!') : 'Incorrect!';
+  fbRes.className = 'fb-result ' + (isCorrect ? 'correct' : 'wrong');
+  document.getElementById('fbAnswer').textContent = 'Answer: ' + q.opts[q.ans];
+  document.getElementById('fbExp').textContent = q.exp;
+  document.getElementById('fbPts').textContent = isCorrect ? '+' + pts + ' points' : 'No points this round';
+  ov.classList.add('show');
+}
+
+function timeOut() {
+  answered = true;
+  const q = questions[currentQ];
+  wrong++; streak = 0;
+  const btns = document.querySelectorAll('.ans-btn');
+  btns.forEach(b => {
+    b.disabled = true;
+    if (parseInt(b.dataset.orig) === q.ans) b.classList.add('correct');
+    else b.classList.add('dim');
+  });
+  const ov = document.getElementById('timeoutOverlay');
+  document.getElementById('timeoutAnswer').textContent = '✅ Correct answer: ' + q.opts[q.ans];
+  ov.classList.add('show');
+}
+
+function nextQuestion() {
+  document.getElementById('feedbackOverlay').classList.remove('show');
+  document.getElementById('timeoutOverlay').classList.remove('show');
+  currentQ++;
+  if (currentQ >= questions.length) {
+    showResults();
+  } else {
+    loadQuestion();
+  }
+}
+
+function showResults() {
+  document.getElementById('game').style.display = 'none';
+  const results = document.getElementById('results');
+  results.style.display = 'flex';
+  const pct = Math.round(correct / questions.length * 100);
+  document.getElementById('finalScore').textContent = score.toLocaleString();
+  document.getElementById('finalPct').textContent = pct + '% correct (' + correct + '/' + questions.length + ')';
+  document.getElementById('sCorrect').textContent = correct;
+  document.getElementById('sWrong').textContent = wrong;
+  document.getElementById('sStreak').textContent = bestStreak;
+
+  let emoji, msg;
+  if (pct >= 90) { emoji = '🏆'; msg = 'Outstanding! You\'re fully ready for the midterm. You clearly know your health behavior theories!'; }
+  else if (pct >= 75) { emoji = '🥇'; msg = 'Great job! A few more reviews and you\'ll be unstoppable. Go back over the questions you missed.'; }
+  else if (pct >= 60) { emoji = '📚'; msg = 'Good effort! Focus on the topics where you struggled — review the study guide and try again!'; }
+  else { emoji = '💪'; msg = 'Keep going! Review the study notes and flashcards, then come back for another round. You\'ve got this!'; }
+
+  document.getElementById('podiumEmoji').textContent = emoji;
+  document.getElementById('resultMsg').textContent = msg;
+}
+
+function resetGame() {
+  document.getElementById('results').style.display = 'none';
+  document.getElementById('splash').style.display = 'flex';
+}
+</script>
+</body>
+</html>
